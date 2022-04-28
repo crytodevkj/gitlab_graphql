@@ -1,3 +1,5 @@
+/// [date] 2022-04-28
+
 package main
 
 func main() {
@@ -13,5 +15,6 @@ func main() {
 			}
 		}
 	`
+	// Call to service layer
 	Service(url, query)
 }
