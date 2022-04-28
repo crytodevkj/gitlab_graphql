@@ -34,5 +34,6 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(string(body))
+
+	ParseThenPrint(string(body))
 }
