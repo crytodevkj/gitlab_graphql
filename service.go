@@ -126,6 +126,6 @@ func Service() {
 	})
 
 	fmt.Println("Now server is running on port 8080")
-	fmt.Println("Test with Get      : curl -g 'http://localhost:8080/graphql?query={user(num:\"1\"){res}}'")
+	fmt.Println("Test with Get: curl -g 'http://localhost:8080/graphql?query={user(num:\"1\"){names%20sumOfAllForks}}'")
 	http.ListenAndServe(":8080", nil)
 }
