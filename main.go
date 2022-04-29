@@ -52,6 +52,7 @@ func main() {
 			}
 			// Input prompt
 			color.Set(color.FgMagenta, color.Bold)
+			fmt.Println("")
 			fmt.Println("Your Request:")
 			color.Unset()
 			// Input your request
