@@ -119,6 +119,42 @@ func executeApi(num string) {
 	_sumOfAllForks = fmt.Sprint(sumOfAllForks)
 }
 
+func GetNamesFromApi(num string) string {
+	// call to repository layer
+	_url = Url
+	_req = strings.Replace(Req, "DISPLAY_NUM", num, -1)
+	res := Api(_url, _req)
+	// parse into array of node
+	nodes := GetNodes(res)
+
+	names := []string{}
+	// loop through array to get names | sum of all forks
+	for i := 0; i < len(nodes); i++ {
+		names = append(names, GetName(nodes[i]))
+	}
+
+	// return results
+	return strings.Join(names, ", ")
+}
+
+func GetSumFromApi(num string) string {
+	// call to repository layer
+	_url = Url
+	_req = strings.Replace(Req, "DISPLAY_NUM", num, -1)
+	res := Api(_url, _req)
+	// parse into array of node
+	nodes := GetNodes(res)
+
+	var sumOfAllForks float64 = 0
+	// loop through array to get names | sum of all forks
+	for i := 0; i < len(nodes); i++ {
+		sumOfAllForks += GetForksCount(nodes[i])
+	}
+
+	// return results
+	return fmt.Sprint(sumOfAllForks)
+}
+
 /// [TODO] convert this http-service into graphql-endpoint
 func Service() {
 	http.HandleFunc("/graphql", func(w http.ResponseWriter, r *http.Request) {
