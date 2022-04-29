@@ -3,8 +3,11 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -80,7 +83,14 @@ func main() {
 			color.Unset()
 
 			color.Set(color.FgWhite)
-			fmt.Println(string(body))
+			var prettyJSON bytes.Buffer
+			er := json.Indent(&prettyJSON, body, "", "  ")
+			if er != nil {
+				log.Println("JSON parse error: ", er)
+				return
+			}
+
+			log.Println(string(prettyJSON.Bytes()))
 			color.Unset()
 		}
 	}()
