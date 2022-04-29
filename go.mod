@@ -1,4 +1,4 @@
-module main
+module github.com/haulerkonj/gitlab_graphql
 
 go 1.18
 
