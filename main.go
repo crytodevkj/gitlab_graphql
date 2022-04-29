@@ -31,30 +31,34 @@ var Req string = `
 
 func main() {
 	var wg sync.WaitGroup
+	/// [note] 2 routines are running, one for service layer, other one for http server
 	wg.Add(2)
 
-	go func() {
+	go func() { // Call to service layer
 		Service()
 		wg.Done()
 	}()
 
-	go func() {
+	go func() { // Call to http server
 		var url string = "http://localhost:8080/graphql?query={user(num:\"1\"){names}}"
 		method := "GET"
 		client := &http.Client{}
 		for {
-			// Taking input from user
+			// This block is optional, for user-friendly logging
 			first_req, _ := http.NewRequest(method, url, strings.NewReader(""))
 			first_res, _ := client.Do(first_req)
 			if first_res == nil {
 				continue
 			}
+			// Input prompt
 			color.Set(color.FgMagenta, color.Bold)
 			fmt.Println("Your Request:")
 			color.Unset()
+			// Input your request
 			color.Set(color.FgYellow, color.Underline)
 			fmt.Scanln(&url)
 			color.Unset()
+			// if request is 'q', app will be exited
 			if url == "q" {
 				os.Exit(1)
 			}
@@ -77,11 +81,12 @@ func main() {
 				fmt.Println(err)
 				return
 			}
+			// output prompt
 			fmt.Println("")
 			color.Set(color.FgMagenta, color.Bold)
 			fmt.Println("Your Response:")
 			color.Unset()
-
+			// json-formatted output
 			color.Set(color.FgWhite)
 			var prettyJSON bytes.Buffer
 			er := json.Indent(&prettyJSON, body, "", "  ")
@@ -89,7 +94,6 @@ func main() {
 				log.Println("JSON parse error: ", er)
 				return
 			}
-
 			log.Println(string(prettyJSON.Bytes()))
 			color.Unset()
 		}
@@ -97,7 +101,4 @@ func main() {
 
 	wg.Wait()
 	color.Unset()
-
-	// Call to service layer
-
 }

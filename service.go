@@ -119,6 +119,7 @@ func executeApi(num string) {
 	_sumOfAllForks = fmt.Sprint(sumOfAllForks)
 }
 
+/// [TODO] convert this http-service into graphql-endpoint
 func Service() {
 	http.HandleFunc("/graphql", func(w http.ResponseWriter, r *http.Request) {
 		result := executeQuery(r.URL.Query().Get("query"), schema)
