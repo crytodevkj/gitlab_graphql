@@ -7,8 +7,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/haulerkonj/gqlgen_todos/graph/generated"
-	"github.com/haulerkonj/gqlgen_todos/graph/model"
+	"github.com/haulerkonj/gqlgen_service/graph/generated"
+	"github.com/haulerkonj/gqlgen_service/graph/model"
 )
 
 func (r *mutationResolver) Fetch(ctx context.Context, input string) (*model.Record, error) {

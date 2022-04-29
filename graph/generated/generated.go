@@ -13,7 +13,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/haulerkonj/gqlgen_todos/graph/model"
+	"github.com/haulerkonj/gqlgen_service/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -262,7 +262,7 @@ func (ec *executionContext) field_Mutation_append_args(ctx context.Context, rawA
 	var arg0 model.NewRecord
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewRecord2githubᚗcomᚋhaulerkonjᚋgqlgen_todosᚋgraphᚋmodelᚐNewRecord(ctx, tmp)
+		arg0, err = ec.unmarshalNNewRecord2githubᚗcomᚋhaulerkonjᚋgqlgen_serviceᚋgraphᚋmodelᚐNewRecord(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -382,7 +382,7 @@ func (ec *executionContext) _Mutation_fetch(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*model.Record)
 	fc.Result = res
-	return ec.marshalNRecord2ᚖgithubᚗcomᚋhaulerkonjᚋgqlgen_todosᚋgraphᚋmodelᚐRecord(ctx, field.Selections, res)
+	return ec.marshalNRecord2ᚖgithubᚗcomᚋhaulerkonjᚋgqlgen_serviceᚋgraphᚋmodelᚐRecord(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_fetch(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -500,7 +500,7 @@ func (ec *executionContext) _Mutation_init(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.Record)
 	fc.Result = res
-	return ec.marshalNRecord2ᚖgithubᚗcomᚋhaulerkonjᚋgqlgen_todosᚋgraphᚋmodelᚐRecord(ctx, field.Selections, res)
+	return ec.marshalNRecord2ᚖgithubᚗcomᚋhaulerkonjᚋgqlgen_serviceᚋgraphᚋmodelᚐRecord(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_init(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -552,7 +552,7 @@ func (ec *executionContext) _Query_record(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*model.Record)
 	fc.Result = res
-	return ec.marshalNRecord2ᚖgithubᚗcomᚋhaulerkonjᚋgqlgen_todosᚋgraphᚋmodelᚐRecord(ctx, field.Selections, res)
+	return ec.marshalNRecord2ᚖgithubᚗcomᚋhaulerkonjᚋgqlgen_serviceᚋgraphᚋmodelᚐRecord(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_record(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3232,16 +3232,16 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNNewRecord2githubᚗcomᚋhaulerkonjᚋgqlgen_todosᚋgraphᚋmodelᚐNewRecord(ctx context.Context, v interface{}) (model.NewRecord, error) {
+func (ec *executionContext) unmarshalNNewRecord2githubᚗcomᚋhaulerkonjᚋgqlgen_serviceᚋgraphᚋmodelᚐNewRecord(ctx context.Context, v interface{}) (model.NewRecord, error) {
 	res, err := ec.unmarshalInputNewRecord(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNRecord2githubᚗcomᚋhaulerkonjᚋgqlgen_todosᚋgraphᚋmodelᚐRecord(ctx context.Context, sel ast.SelectionSet, v model.Record) graphql.Marshaler {
+func (ec *executionContext) marshalNRecord2githubᚗcomᚋhaulerkonjᚋgqlgen_serviceᚋgraphᚋmodelᚐRecord(ctx context.Context, sel ast.SelectionSet, v model.Record) graphql.Marshaler {
 	return ec._Record(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNRecord2ᚖgithubᚗcomᚋhaulerkonjᚋgqlgen_todosᚋgraphᚋmodelᚐRecord(ctx context.Context, sel ast.SelectionSet, v *model.Record) graphql.Marshaler {
+func (ec *executionContext) marshalNRecord2ᚖgithubᚗcomᚋhaulerkonjᚋgqlgen_serviceᚋgraphᚋmodelᚐRecord(ctx context.Context, sel ast.SelectionSet, v *model.Record) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")

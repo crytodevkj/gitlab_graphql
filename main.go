@@ -35,7 +35,7 @@ func main() {
 	wg.Add(2)
 
 	go func() { // Call to service layer
-		Service()
+		Server()
 		wg.Done()
 	}()
 
