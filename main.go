@@ -1,8 +1,7 @@
-/// [date] 2022-04-28
-
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -14,90 +13,128 @@ import (
 	"sync"
 
 	"github.com/fatih/color"
+	"github.com/haulerkonj/gqlgen_service/service"
 )
 
-var Url string = "https://gitlab.com/api/graphql"
-var Req string = `
-		query last_projects($n: Int = DISPLAY_NUM) {
-			projects(last:$n) {
-				nodes {
-					name
-					description
-					forksCount
-				}
-			}
+// This Reader is important to aviod EOF in stdin.
+var reader = bufio.NewReader(os.Stdin)
+var url = "http://localhost:8081/query"
+var method = "POST"
+var payload_str = ""
+var payload = strings.NewReader("{\"query\":\"mutation Inits {  init {    num    names    sumOfAllForks  }}\",\"variables\":{}}")
+var client = &http.Client{}
+
+/// This block is optional for good logging.
+func pre_loop() {
+	for {
+		var pre_payload = strings.NewReader("{\"query\":\"mutation Inits {  init {    num    names    sumOfAllForks  }}\",\"variables\":{}}")
+		req, err := http.NewRequest(method, url, pre_payload)
+		if err != nil {
+			fmt.Println(err)
+			continue
 		}
-	`
+		req.Header.Add("Content-Type", "application/json")
+
+		res, err := client.Do(req)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		defer res.Body.Close()
+
+		body, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		if body != nil {
+			break
+		}
+	}
+}
+
+/// [NOTE] USEFUL COMMANDS
+///
+/// 1. Init first and only once
+///      {\"query\":\"mutation Inits {  init {    num    names    sumOfAllForks  }}\",\"variables\":{}}
+/// 2. Query according to num
+///      {"query":"mutation fetches($n: String!) {  fetch(input: $n) {    num    names    sumOfAllForks  }}","variables":{"n":"3"}}
+/// 3. Query all records in raw text
+///      {"query":"query allRec {  records }","variables":{}}
+/// 4. Query one record that have been queried before
+///      {"query":"query getRec($n: String!) {  record(input: $n) {    num    names    sumOfAllForks  }}", "variables":{"n":"3"}}
+/// 5. Append record
+///      {"query":"mutation Appends($n: NewRecord!) {  append (input: $n)}", "variables":{  "n": {    "num": "3",    "names": "a,b,c",    "sumOfAllForks": "11"  }}}
+
+func my_loop() {
+	for {
+		// Input prompt
+		color.Set(color.FgMagenta, color.Bold)
+		fmt.Println("\nYour Request:")
+		color.Unset()
+		// Input your request
+		color.Set(color.FgYellow, color.Underline)
+		payload_str, _ = reader.ReadString(byte('\n'))
+		color.Unset()
+
+		// ----------------------------- I N P U T -------------------------------------------
+		// if request is 'exit', app will be exited
+		if payload_str == "exit\r\n" {
+			os.Exit(1)
+		}
+		payload = strings.NewReader(payload_str)
+		req, err := http.NewRequest(method, url, payload)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		req.Header.Add("Content-Type", "application/json")
+
+		res, err := client.Do(req)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		defer res.Body.Close()
+
+		body, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		// ----------------------------- O U T P U T -------------------------------------------
+		// Output prompt
+		color.Set(color.FgMagenta, color.Bold)
+		fmt.Println("Query Response:")
+		color.Unset()
+		// json-formatted output
+		color.Set(color.FgWhite)
+		var prettyJSON bytes.Buffer
+		er := json.Indent(&prettyJSON, body, "", "  ")
+		if er != nil {
+			log.Println("JSON parse error: ", er)
+			return
+		}
+		// print the result
+		log.Println(string(prettyJSON.Bytes()))
+		color.Unset()
+	}
+}
 
 func main() {
 	var wg sync.WaitGroup
-	/// [note] 2 routines are running, one for service layer, other one for http server
+	/// [note] 2 routines are running, one for service layer, other one for graphql endpoint
 	wg.Add(2)
 
 	go func() { // Call to service layer
-		Server()
+		service.Server()
 		wg.Done()
 	}()
 
-	go func() { // Call to http server
-		var url string = "http://localhost:8080/graphql?query={user(num:\"1\"){names}}"
-		method := "GET"
-		client := &http.Client{}
-		for {
-			// This block is optional, for user-friendly logging
-			first_req, _ := http.NewRequest(method, url, strings.NewReader(""))
-			first_res, _ := client.Do(first_req)
-			if first_res == nil {
-				continue
-			}
-			// Input prompt
-			color.Set(color.FgMagenta, color.Bold)
-			fmt.Println("")
-			fmt.Println("Your Request:")
-			color.Unset()
-			// Input your request
-			color.Set(color.FgYellow, color.Underline)
-			fmt.Scanln(&url)
-			color.Unset()
-			// if request is 'q', app will be exited
-			if url == "q" {
-				os.Exit(1)
-			}
-
-			req, err := http.NewRequest(method, url, strings.NewReader(""))
-
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			res, err := client.Do(req)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			defer res.Body.Close()
-
-			body, err := ioutil.ReadAll(res.Body)
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			// output prompt
-			fmt.Println("")
-			color.Set(color.FgMagenta, color.Bold)
-			fmt.Println("Your Response:")
-			color.Unset()
-			// json-formatted output
-			color.Set(color.FgWhite)
-			var prettyJSON bytes.Buffer
-			er := json.Indent(&prettyJSON, body, "", "  ")
-			if er != nil {
-				log.Println("JSON parse error: ", er)
-				return
-			}
-			log.Println(string(prettyJSON.Bytes()))
-			color.Unset()
-		}
+	go func() { // Call to graphql endpoint
+		pre_loop()
+		my_loop()
+		wg.Done()
 	}()
 
 	wg.Wait()
